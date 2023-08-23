@@ -1,26 +1,33 @@
+import datetime
 from speech_recognition import Recognizer, Microphone
+from audio import response_recorder
+from weather import get_current_temp
 
 recognizer = Recognizer()
 hotwords = [
-    "Ouvrir la lumière",
-    "Allumer la lumière",
-    "Fermer la lumière",
-    "Éteindre la lumière",
-    "Ouvrir la lumière de l’entrée",
-    "Allumer la lumière de l’entrée",
-    "Fermer la lumière de l’entrée",
-    "Éteindre la lumière de l’entrée",
-    "Ouvrir la lumière du salon",
-    "Allumer la lumière du salon",
-    "Fermer la lumière du salon",
-    "Éteindre la lumière du salon",
-    "Quelle heure est-il?",
-    "Il est quelle heure?",
-    "Quel temps fait-il?",
+    "ouvrir la lumière",
+    "allumer la lumière",
+    "fermer la lumière",
+    "éteindre la lumière",
+    "ouvrir la lumière de l’entrée",
+    "allumer la lumière de l’entrée",
+    "fermer la lumière de l’entrée",
+    "éteindre la lumière de l’entrée",
+    "ouvrir la lumière du salon",
+    "allumer la lumière du salon",
+    "fermer la lumière du salon",
+    "éteindre la lumière du salon",
+    "quelle heure est-il",
+    "il est quelle heure",
+    "quel temps fait-il",
 ]
 
+current_time = datetime.datetime.now()
 
-def commande_recorder():
+hours_minutes = current_time.strftime("%H:%M")
+
+
+def command_recorder():
     # On enregistre le son
     with Microphone() as source:
         print("Réglage du bruit ambiant... Patientez...")
@@ -36,36 +43,43 @@ def commande_recorder():
         print("Vous avez dit : {}".format(text))
         for hotword in hotwords:
             if hotword in text:
-                if hotword in {"Ouvrir la lumière", "Allumer la lumière"}:
-                    pass
-                elif hotword in {"Fermer la lumière", "Éteindre la lumière"}:
-                    pass
+                if hotword in {"ouvrir la lumière", "allumer la lumière"}:
+                    response_recorder(
+                        "Dans quelle pièce souhaiteriez-vous allumer les lumières ?"
+                    )
+                elif hotword in {"fermer la lumière", "éteindre la lumière"}:
+                    response_recorder(
+                        "Dans quelle pièce souhaiteriez-vous éteindre les lumières ?"
+                    )
                 elif hotword in {
-                    "Ouvrir la lumière de l’entrée",
-                    "Allumer la lumière de l’entrée",
+                    "ouvrir la lumière de l’entrée",
+                    "allumer la lumière de l’entrée",
                 }:
-                    pass
+                    response_recorder("La lumière de l’entrée est allumée")
                 elif hotword in {
-                    "Fermer la lumière de l’entrée",
-                    "Éteindre la lumière de l’entrée",
+                    "fermer la lumière de l’entrée",
+                    "éteindre la lumière de l’entrée",
                 }:
-                    pass
+                    response_recorder("La lumière de l’entrée est éteinte")
                 elif hotword in {
-                    "Ouvrir la lumière du salon",
-                    "Allumer la lumière du salon",
+                    "ouvrir la lumière du salon",
+                    "allumer la lumière du salon",
                 }:
-                    pass
+                    response_recorder("La lumière du salon est allumée")
                 elif hotword in {
-                    "Fermer la lumière du salon",
-                    "Éteindre la lumière du salon",
+                    "fermer la lumière du salon",
+                    "éteindre la lumière du salon",
                 }:
-                    pass
-                elif hotword in {"Quelle heure est-il?", "Il est quelle heure?"}:
-                    pass
-                elif hotword == "Quel temps fait-il?":
-                    pass
+                    response_recorder("la lumière du salon est éteinte")
+                elif hotword in {"quelle heure est-il", "il est quelle heure"}:
+                    response_recorder(f"Il est {hours_minutes}")
+                elif hotword == "quel temps fait-il":
+                    response_recorder(f"Il fait {get_current_temp()} degrés")
             else:
-                pass
+                continue
 
     except Exception as ex:
         print(ex)
+
+
+command_recorder()
